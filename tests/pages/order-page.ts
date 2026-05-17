@@ -4,6 +4,7 @@ import { BasePage } from './base-page'
 import { Button } from '../atoms/Button'
 import { NotFoundPage } from './order-not-found-page'
 import { OrderDetailsPage } from './order-details-page'
+
 export class OrderPage extends BasePage {
   readonly title: Locator
   readonly statusButton: Button
@@ -62,5 +63,9 @@ export class OrderPage extends BasePage {
     await this.searchInput.fill(`${id}`)
     await this.searchButton.click()
     return new OrderDetailsPage(this.page)
+  }
+
+  async checkSuccessfullyCreatedPopup(visible = true): Promise<void> {
+    await expect(this.confirmationPopup).toBeVisible({ visible })
   }
 }
