@@ -1,29 +1,28 @@
 import { test } from '@playwright/test'
 import { LoginPage } from '../pages/login-page'
 import { PASSWORD, USERNAME } from '../../config/env-data'
-import {ENDPOINTS} from '../../utils/endpoints'
+import { ENDPOINTS } from '../../utils/endpoints'
 import { fakeJWT } from '../../utils/jwt'
-import { TEST_DATA} from '../../utils/TestData'
-
+import { TEST_DATA } from '../../utils/TestData'
 
 test.describe('Mocked order flows', () => {
   test('Mocked order creation', async ({ page }) => {
     const loginPage = new LoginPage(page)
     await loginPage.open()
-    await page.route(`**${ENDPOINTS.STUDENTS}`,async  route => {
-      await route.fulfill({body: fakeJWT()})
-    });
+    await page.route(`**${ENDPOINTS.STUDENTS}`, async (route) => {
+      await route.fulfill({ body: fakeJWT() })
+    })
     const orderPage = await loginPage.signIn(USERNAME, PASSWORD)
-    await page.route(`**${ENDPOINTS.ORDERS}`,async  route => {
+    await page.route(`**${ENDPOINTS.ORDERS}`, async (route) => {
       await route.fulfill({
         status: 200,
         json: TEST_DATA.CREATE_ORDER_RESPONSE,
-        contentType: 'application/json'
+        contentType: 'application/json',
       })
     })
     await orderPage.createOrder()
     await orderPage.checkSuccessfullyCreatedPopup()
-  });
+  })
 
   test('Mocked order search - found', async ({ page }) => {
     const loginPage = new LoginPage(page)
@@ -48,7 +47,7 @@ test.describe('Mocked order flows', () => {
     const loginPage = new LoginPage(page)
     await loginPage.open()
     await page.route(`**${ENDPOINTS.STUDENTS}`, async (route) => {
-      await route.fulfill({ body: fakeJWT()})
+      await route.fulfill({ body: fakeJWT() })
     })
     const orderPage = await loginPage.signIn(USERNAME, PASSWORD)
 
@@ -65,7 +64,7 @@ test.describe('Mocked order flows', () => {
     const loginPage = new LoginPage(page)
     await loginPage.open()
     await page.route(`**${ENDPOINTS.STUDENTS}`, async (route) => {
-      await route.fulfill({ body: fakeJWT()})
+      await route.fulfill({ body: fakeJWT() })
     })
     const orderPage = await loginPage.signIn(USERNAME, PASSWORD)
 
@@ -79,6 +78,3 @@ test.describe('Mocked order flows', () => {
     await notFoundPage.checkVisible(true)
   })
 })
-
-
-
